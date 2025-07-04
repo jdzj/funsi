@@ -75,7 +75,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     <div id="content">
 <div class="markdown-body" id="postBody"><p>有台服务器，并不繁忙，但是CPU使用率和负载状态却一直在近乎满负荷的状态，经过查找原因，其实是网站的脚本作祟，通过开启PHP的opcache即可解决。</p>
 <p>在宝塔面板的PHP管理内安装opcache插件，将最大脚本运行时间修改为60，最后将并发方案设为30即可。（注意：宝塔面板通常会自动根据你的服务器配置给你设置合适的并发，如果你觉得不够用可以自己设置），接着在性能调整中将最大空闲进程数设置为20。</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/31faa784-e22d-4a06-95fb-5efde9cf5734"><img src="https://github.com/user-attachments/assets/31faa784-e22d-4a06-95fb-5efde9cf5734" alt="Image" style="max-width: 100%;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/31faa784-e22d-4a06-95fb-5efde9cf5734"><img src="https://github.com/user-attachments/assets/31faa784-e22d-4a06-95fb-5efde9cf5734" alt="Image" style="max-width: 100%; height: auto;"></a></p>
 <p>对我的服务器有用，不保证对你有用。</p>
 <p>参考：<a href="https://www.jianshu.com/p/b454c60d71a7" rel="nofollow">https://www.jianshu.com/p/b454c60d71a7</a></p>
 </div>
