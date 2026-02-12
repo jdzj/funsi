@@ -9,7 +9,7 @@
     "email":"topy@vip.qq.com",
     "startSite":"09/05/1983",
     "onePageListNum":15,
-    "singlePage":["about"],
+    "singlePage":["about","link"],
     "iconList":{"nav":"M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Z"},
     "exlink":{"nav":"https://1.618033.com/"},
     "commentLabelColor":"#006b75",
