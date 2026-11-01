@@ -1,98 +1,43 @@
-name: build Gmeek
+# Simple workflow for deploying static content to GitHub Pages
+name: Deploy static content to Pages
 
 on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches: ["main"]
+
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-  issues:
-    types: [opened, edited]
-  schedule:
-    - cron: "0 16 * * *"
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  build:
-    name: Generate blog
-    runs-on: ubuntu-latest
-    if: ${{ github.event.repository.owner.id == github.event.sender.id || github.event_name == 'schedule' }}
-    permissions: write-all
-    env:
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Pages
-        id: pages
-        uses: actions/configure-pages@v4
-
-      - name: Check GitHub token
-        run: |
-          if [ -z "$GH_TOKEN" ]; then
-            echo "::error::Missing GH_TOKEN repository secret. Create a PAT with repo/public_repo permission and add it to Settings > Secrets and variables > Actions."
-            exit 1
-          fi
-
-      - name: Get config.json
-        run: |
-          echo "====== check config.josn file ======"
-          cat config.json
-          echo "====== check config.josn end  ======"
-          sudo apt-get install jq
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.8
-
-      - name: Clone source code
-        run: |
-          GMEEK_VERSION=$(jq -r ".GMEEK_VERSION" config.json)
-          git clone https://github.com/Meekdai/Gmeek.git /opt/Gmeek;
-          cd /opt/Gmeek/
-          lastTag=$(git describe --tags `git rev-list --tags --max-count=1`)
-          if [ $GMEEK_VERSION == 'last' ]; then git checkout $lastTag; else git checkout $GMEEK_VERSION; fi;
-
-      - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install -r /opt/Gmeek/requirements.txt
-
-      - name: Generate new html
-        run: |
-          cp -r ./* /opt/Gmeek/
-          cd /opt/Gmeek/
-          python Gmeek.py "$GH_TOKEN" "${{ github.repository }}" --issue_number '${{ github.event.issue.number }}'
-          cp -a /opt/Gmeek/docs ${{ github.workspace }}
-          cp -a /opt/Gmeek/backup ${{ github.workspace }}
-          cp /opt/Gmeek/blogBase.json ${{ github.workspace }}
-
-      - name: update html
-        run: |
-          git config --local user.email "$(jq -r ".email" config.json)"
-          git config --local user.name "${{ github.repository_owner }}"
-          git add .
-          git commit -a -m '🎉auto update by Gmeek action' || echo "nothing to commit"
-          git push || echo "nothing to push"
-          sleep 3
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: 'docs/.'
-
+  # Single deploy job since we're just deploying
   deploy:
-    name: Deploy blog
-    runs-on: ubuntu-latest
-    needs: build
-    permissions:
-      contents: write
-      pages: write
-      id-token: write
-    concurrency:
-      group: "pages"
-      cancel-in-progress: false
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Upload entire repository
+          path: '.'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
